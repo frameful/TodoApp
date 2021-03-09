@@ -9,8 +9,7 @@ export interface ITodo {
 
 function TodoPanel() {
   const [todos, setTodos] = useState<ITodo[]>([
-    { title: "suck ballz", finished: false },
-    { title: "ballz suck", finished: false },
+    { title: "test", finished: false },
   ]);
 
   const [input, setInput] = useState<string>("");
