@@ -24,7 +24,7 @@ function TodoPanel() {
 
   const addTodo = (event: any) => {
     event?.preventDefault();
-    if (todos.some((item: ITodo) => item.title == input)) return;
+    if (todos.some((item: ITodo) => item.title == input) || !input) return;
     setTodos([...todos, { title: input, finished: false }]);
     setInput("");
   };
@@ -41,7 +41,7 @@ function TodoPanel() {
 
   return (
     <div className="flex items-center bg-image bg-cover justify-center h-screen">
-      <div className="font-sans flex-col text-white flex items-center bg-indigo-400 bg-opacity-10 border shadow rounded-lg p-3 w-1/3 h-auto">
+      <div className="font-sans flex-col text-white flex items-center bg-indigo-400 bg-opacity-10 border shadow rounded-lg p-3 w-1/3 h-auto max-h-2/3">
         <h1 className="p-5 text-lg font-bold">Todo App</h1>
         <form action="" className="w-3/4 mb-10">
           <div className="text-black flex items-center bg-white rounded-lg mb-2">
@@ -64,7 +64,7 @@ function TodoPanel() {
           </button>
         </form>
         {todos.length ? <div className="w-full bg-white h-1"></div> : null}
-        <div className="flex flex-col divide-y w-full">
+        <div className="flex flex-col divide-y w-full  overflow-y-scroll">
           {todos.map((item) => (
             <Todo
               todo={item}
