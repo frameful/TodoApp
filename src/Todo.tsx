@@ -1,5 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faTrashAlt,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import { ITodo } from "./TodoPanel";
 
@@ -11,8 +15,8 @@ interface IProps {
 
 const Todo = ({ todo, deleteTodo, finishTodo }: IProps) => {
   return (
-    <div className="flex w-full items-center p-5">
-      {todo.finished ? (
+    <div className="flex w-full items-center bg-gray-100 h-14 mb-1">
+      {/* {todo.finished ? (
         <FontAwesomeIcon
           className="fill-current text-green-300 cursor-pointer mr-3"
           icon={faCheck}
@@ -25,16 +29,27 @@ const Todo = ({ todo, deleteTodo, finishTodo }: IProps) => {
           }}
           icon={faCheck}
         />
+      )} */}
+
+      {todo.finished ? (
+        <div className="h-full w-2 bg-green-500"></div>
+      ) : (
+        <div
+          className="h-full w-2 bg-gray-200 cursor-pointer"
+          onClick={() => {
+            finishTodo(todo.title);
+          }}
+        ></div>
       )}
 
-      <span className="">{todo.title}</span>
+      <span className="ml-4">{todo.title}</span>
       <div className="flex-grow"></div>
       <FontAwesomeIcon
-        className="cursor-pointer fill-current text-red-300 hover:text-red-400"
+        className="cursor-pointer fill-current text-red-500 hover:text-red-600 mr-2"
         onClick={() => {
           deleteTodo(todo.title);
         }}
-        icon={faTrashAlt}
+        icon={faTimes}
       />
     </div>
   );
