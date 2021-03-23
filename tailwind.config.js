@@ -10,6 +10,7 @@ module.exports = {
     },
     fontFamily: {
       sans: "Roboto",
+      mono: "Fantasque Sans Mono",
     },
     extend: {
       outline: {

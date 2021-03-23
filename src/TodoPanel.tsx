@@ -46,8 +46,9 @@ function TodoPanel() {
 
   return (
     <div className="flex items-center bg-white justify-center h-screen">
-      <div className="font-sans flex-col text-black flex items-center bg-white bg-opacity-10 border-black border shadow p-3 w-1/4 h-auto max-h-2/3">
+      <div className="font-mono flex-col text-black flex items-center bg-white bg-opacity-10 border-black border shadow p-3 w-1/4 h-auto max-h-2/3">
         <div className="w-full p-5">
+          <div className="w-full bg-black h-px"></div>
           <div className="w-full flex items-center">
             <h1 className="inline-block p-5 text-lg font-bold">Todo App</h1>
             <div className="flex-grow"></div>
@@ -72,7 +73,7 @@ function TodoPanel() {
           {todos.length ? (
             <div className="w-full bg-black h-px mb-5"></div>
           ) : null}
-          <div className="flex flex-col divide-y w-full overflow-y-scroll max-h-300px">
+          <div className="flex flex-col divide-y w-full overflow-y-scroll max-h-300px mb-5">
             {todos.map((item) =>
               hideFinished ? (
                 !item.finished ? (
@@ -91,6 +92,13 @@ function TodoPanel() {
               )
             )}
           </div>
+          <div className="w-full bg-black h-px"></div>
+        </div>
+        <div className="flex flex-col items-center pb-2">
+          <span>Copyright © 2021</span>
+          <a href="" target="none">
+            About
+          </a>
         </div>
       </div>
     </div>

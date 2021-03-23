@@ -15,7 +15,7 @@ interface IProps {
 
 const Todo = ({ todo, deleteTodo, finishTodo }: IProps) => {
   return (
-    <div className="flex w-full items-center bg-gray-100 h-14 mb-1">
+    <div className="flex w-full items-center bg-gray-100 h-10 mb-2">
       {/* {todo.finished ? (
         <FontAwesomeIcon
           className="fill-current text-green-300 cursor-pointer mr-3"
