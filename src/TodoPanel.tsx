@@ -1,20 +1,58 @@
 import React from "react";
-import { useState } from "react";
+import { useState, Fragment, useEffect } from "react";
 import Todo from "./Todo";
+import { Listbox, Transition } from "@headlessui/react";
+import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 
 export interface ITodo {
-  title: String;
-  finished: Boolean;
+  title: string;
+  finished: boolean;
+  dateAdded: Date;
 }
 
-function TodoPanel() {
+interface ISortOption {
+  id: number;
+  sort: (first: ITodo, second: ITodo) => number;
+  name: string;
+}
+
+const sortOptions: ISortOption[] = [
+  {
+    id: 1,
+    sort: (first: ITodo, second: ITodo) => {
+      if (first.dateAdded > second.dateAdded) return 1;
+      if (first.dateAdded < second.dateAdded) return -1;
+      return 0;
+    },
+    name: "By Date",
+  },
+  {
+    id: 2,
+    sort: (first: ITodo, second: ITodo) => {
+      if (first.title > second.title) return 1;
+      if (first.title < second.title) return -1;
+      return 0;
+    },
+    name: "By Title",
+  },
+];
+
+const TodoPanel = () => {
   const [todos, setTodos] = useState<ITodo[]>([
-    { title: "test", finished: false },
+    { title: "test", finished: false, dateAdded: new Date() },
   ]);
+
+  const [selectedSortOption, setSelectedSortOption] = useState<ISortOption>(
+    sortOptions[0]
+  );
 
   const [input, setInput] = useState<string>("");
 
   const [hideFinished, setHideFinished] = useState<boolean>(false);
+
+  useEffect(() => {
+    setTodos([...todos].sort(selectedSortOption.sort));
+  }, [selectedSortOption]);
 
   const toggleHideFinished = () => {
     setHideFinished(!hideFinished);
@@ -31,23 +69,82 @@ function TodoPanel() {
   const addTodo = (event: any) => {
     event?.preventDefault();
     if (todos.some((item: ITodo) => item.title == input) || !input) return;
-    setTodos([...todos, { title: input, finished: false }]);
+    setTodos(
+      [...todos, { title: input, finished: false, dateAdded: new Date() }].sort(
+        selectedSortOption.sort
+      )
+    );
     setInput("");
   };
 
   const finishTodo = (title: string) => {
     setTodos(
-      todos.map((item) =>
+      todos.map((item: ITodo) =>
         item.title == title
-          ? { title: item.title, finished: true }
-          : { title: item.title, finished: item.finished }
+          ? { title: item.title, finished: true, dateAdded: item.dateAdded }
+          : item
       )
     );
   };
 
   return (
     <div className="flex items-center bg-image bg-cover justify-center h-screen">
-      <div className="font-sans flex-col text-white flex items-center bg-indigo-400 bg-opacity-10 border shadow rounded-lg p-3 w-1/3 h-auto max-h-2/3">
+      <div className="w-72 fixed top-60">
+        <Listbox value={selectedSortOption} onChange={setSelectedSortOption}>
+          <Listbox.Label className="text-white">Sort: </Listbox.Label>
+          <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
+            <span className="block truncate">{selectedSortOption.name}</span>
+            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <SelectorIcon
+                className="w-5 h-5 text-gray-400"
+                aria-hidden="true"
+              />
+            </span>
+          </Listbox.Button>
+          <Transition
+            as={Fragment}
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              {sortOptions.map((item: ISortOption) => (
+                <Listbox.Option
+                  className={({ active }) =>
+                    `${active ? "text-amber-900 bg-gray-100" : "text-gray-900"}
+                        cursor-default select-none relative py-2 pl-10 pr-4`
+                  }
+                  key={item.id}
+                  value={item}
+                >
+                  {({ selected, active }) => (
+                    <>
+                      <span
+                        className={`${
+                          selected ? "font-medium" : "font-normal"
+                        } block truncate`}
+                      >
+                        {item.name}
+                      </span>
+                      {selected ? (
+                        <span
+                          className={`${
+                            active ? "text-amber-600" : "text-amber-600"
+                          }
+                                absolute inset-y-0 left-0 flex items-center pl-3`}
+                        >
+                          <CheckIcon className="w-5 h-5" aria-hidden="true" />
+                        </span>
+                      ) : null}
+                    </>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
+        </Listbox>
+      </div>
+      <div className="font-sans text-white flex-col flex items-center bg-indigo-400 bg-opacity-10 border shadow rounded-lg p-3 w-1/3 h-auto max-h-2/3">
         <h1 className="p-5 text-lg font-bold">Todo App</h1>
         <form action="" className="w-3/4 mb-5">
           <div className="text-black flex items-center bg-white rounded-lg mb-2">
@@ -108,6 +205,6 @@ function TodoPanel() {
       </div>
     </div>
   );
-}
+};
 
 export default TodoPanel;
